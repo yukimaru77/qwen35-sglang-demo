@@ -106,11 +106,21 @@ notebooks/qwen35_sglang_demo.ipynb
 
 Notebook でも次を順に試せます。
 - GPU確認
-- 画像生成
+- サンプル画像生成
 - DockerでSGLangサーバ起動
 - テキスト入力テスト
 - 画像入力テスト
+- 複数サンプル画像 + 複数サンプルプロンプトの一括実行
+- 実行済み Notebook / HTML 保存
 - 後始末
+
+今回、以下も作成・保存済みです。
+
+```text
+notebooks/qwen35_sglang_demo.executed.ipynb
+notebooks/qwen35_sglang_demo.executed.html
+outputs/sample_suite_results.json
+```
 
 ## Dockerfile について
 
@@ -177,7 +187,7 @@ docker run -d --rm \
 - [x] `/v1/models` が返る
 - [x] テキスト入力が成功する
 - [x] 画像入力が成功する
-- [ ] Notebook 版でも再現できる
+- [x] Notebook 版でも再現できる
 - [x] Dockerfile の helper image が build できる
 
 ## 今回の実機検証メモ
