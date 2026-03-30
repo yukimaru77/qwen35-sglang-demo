@@ -150,6 +150,7 @@ docker run -d --rm \
     --tp-size 1 \
     --mem-fraction-static 0.8 \
     --context-length 32768 \
+    --attention-backend triton \
     --reasoning-parser qwen3
 ```
 
@@ -170,14 +171,29 @@ docker run -d --rm \
 
 ## 検証チェックリスト
 
-- [ ] `nvidia-smi` が見える
-- [ ] `docker run --gpus all ... nvidia-smi` が通る
-- [ ] SGLang コンテナが起動する
-- [ ] `/v1/models` が返る
-- [ ] テキスト入力が成功する
-- [ ] 画像入力が成功する
+- [x] `nvidia-smi` が見える
+- [x] `docker run --gpus all ... nvidia-smi` が通る
+- [x] SGLang コンテナが起動する
+- [x] `/v1/models` が返る
+- [x] テキスト入力が成功する
+- [x] 画像入力が成功する
 - [ ] Notebook 版でも再現できる
-- [ ] Dockerfile の helper image が build できる
+- [x] Dockerfile の helper image が build できる
+
+## 今回の実機検証メモ
+
+- 実行環境 GPU: `NVIDIA GB10`
+- 重要: Blackwell 系 GPU では、Qwen3.5 の hybrid GDN モデルに対して `--attention-backend triton` が必要だった
+- `flashinfer` のままだと起動時に以下の assertion で失敗した:
+
+```text
+AssertionError: triton or trtllm_mha backend are the only supported backends on Blackwell GPUs for hybrid GDN models
+```
+
+- 修正後、`Qwen/Qwen3.5-4B` で以下を確認:
+  - OpenAI 互換 `/v1/models`
+  - テキスト入力推論
+  - 画像入力推論
 
 ## 出典メモ
 

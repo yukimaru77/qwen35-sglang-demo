@@ -9,7 +9,13 @@ HF_TOKEN="${HF_TOKEN:-}"
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 mkdir -p "$HF_CACHE_DIR"
-python3 "$PROJECT_ROOT/scripts/generate_test_image.py"
+PYTHON_BIN="${PYTHON_BIN:-$PROJECT_ROOT/.venv/bin/python}"
+if [[ ! -x "$PYTHON_BIN" ]]; then
+  echo "Python helper environment not found: $PYTHON_BIN" >&2
+  echo "Please run: uv venv .venv && uv pip install -p .venv/bin/python pillow requests nbformat nbconvert jupyter" >&2
+  exit 1
+fi
+"$PYTHON_BIN" "$PROJECT_ROOT/scripts/generate_test_image.py"
 
 docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
 
@@ -30,6 +36,7 @@ docker run -d --rm \
     --tp-size 1 \
     --mem-fraction-static 0.8 \
     --context-length 32768 \
+    --attention-backend triton \
     --reasoning-parser qwen3
 
 echo "Started container: $CONTAINER_NAME"
@@ -47,7 +54,7 @@ for i in $(seq 1 180); do
   fi
 done
 
-python3 "$PROJECT_ROOT/scripts/text_request.py" --api-base "http://127.0.0.1:${PORT}/v1" --model "$MODEL_NAME" | tee "$PROJECT_ROOT/outputs/text_response.json"
-python3 "$PROJECT_ROOT/scripts/vision_request.py" --api-base "http://127.0.0.1:${PORT}/v1" --model "$MODEL_NAME" --image "$PROJECT_ROOT/assets/demo_image.png" | tee "$PROJECT_ROOT/outputs/vision_response.json"
+"$PYTHON_BIN" "$PROJECT_ROOT/scripts/text_request.py" --api-base "http://127.0.0.1:${PORT}/v1" --model "$MODEL_NAME" | tee "$PROJECT_ROOT/outputs/text_response.json"
+"$PYTHON_BIN" "$PROJECT_ROOT/scripts/vision_request.py" --api-base "http://127.0.0.1:${PORT}/v1" --model "$MODEL_NAME" --image "$PROJECT_ROOT/assets/demo_image.png" | tee "$PROJECT_ROOT/outputs/vision_response.json"
 
 echo "Demo finished successfully. Outputs saved under $PROJECT_ROOT/outputs"
