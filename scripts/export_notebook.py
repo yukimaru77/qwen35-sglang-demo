@@ -27,11 +27,11 @@ def main() -> None:
             md_cell('## 1. 前提\n- Docker が使える\n- NVIDIA GPU が使える\n- `HF_TOKEN` が必要に応じて設定されている'),
             code_cell('!docker ps --filter name=qwen35-sglang-api\n!curl -s http://127.0.0.1:30000/v1/models || true'),
             md_cell('## 2. OpenAI クライアント初期化'),
-            code_cell("""from openai import OpenAI\n\nclient = OpenAI(\n    api_key='EMPTY',\n    base_url='http://127.0.0.1:30000/v1',\n)\nclient"""),
+            code_cell("""import os\nfrom openai import OpenAI\n\nBASE_URL = os.environ.get('OPENAI_BASE_URL', 'http://127.0.0.1:30000/v1')\nclient = OpenAI(\n    api_key='EMPTY',\n    base_url=BASE_URL,\n)\nprint('Using base_url =', BASE_URL)\nclient"""),
             md_cell('## 3. テキスト推論'),
             code_cell("""resp = client.chat.completions.create(\n    model='Qwen/Qwen3.5-27B',\n    messages=[\n        {'role': 'user', 'content': 'SGLangとは何かを日本語で2文で説明してください。'}\n    ],\n    max_tokens=64,\n)\nresp"""),
             md_cell('## 4. 画像入力推論'),
-            code_cell("""import base64\nimport mimetypes\nfrom pathlib import Path\n\nimg = Path('image.png')  # ここを自分の画像に置き換える\nmime = mimetypes.guess_type(img.name)[0] or 'image/png'\nimage_url = 'data:' + mime + ';base64,' + base64.b64encode(img.read_bytes()).decode('utf-8')\n\nresp = client.chat.completions.create(\n    model='Qwen/Qwen3.5-27B',\n    messages=[\n        {\n            'role': 'user',\n            'content': [\n                {'type': 'text', 'text': 'この画像の内容を説明してください。'},\n                {'type': 'image_url', 'image_url': {'url': image_url}},\n            ],\n        }\n    ],\n    max_tokens=64,\n)\nresp"""),
+            code_cell("""import base64\nimport mimetypes\nfrom pathlib import Path\n\nimg = Path('image.png')  # ここを自分の画像に置き換える\nif img.exists():\n    mime = mimetypes.guess_type(img.name)[0] or 'image/png'\n    image_url = 'data:' + mime + ';base64,' + base64.b64encode(img.read_bytes()).decode('utf-8')\n\n    resp = client.chat.completions.create(\n        model='Qwen/Qwen3.5-27B',\n        messages=[\n            {\n                'role': 'user',\n                'content': [\n                    {'type': 'text', 'text': 'この画像の内容を説明してください。'},\n                    {'type': 'image_url', 'image_url': {'url': image_url}},\n                ],\n            }\n        ],\n        max_tokens=64,\n    )\n    resp\nelse:\n    print('image.png が見つからないため、このセルはスキップされました。')"""),
             md_cell('## 5. 補足\nQwen3.5 は thinking mode が既定のため、レスポンスは `reasoning_content` 側に現れることがあります。'),
         ],
         'metadata': {
