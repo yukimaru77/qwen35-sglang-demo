@@ -195,6 +195,18 @@ Notebook:
 notebooks/pdf_input_quickstart.ipynb
 ```
 
+vLLM 版 PDF notebook を生成:
+
+```bash
+uv run python scripts/export_vllm_pdf_notebook.py
+```
+
+Notebook:
+
+```text
+notebooks/vllm_pdf_input_quickstart.ipynb
+```
+
 ## 8. 停止
 
 ```bash
