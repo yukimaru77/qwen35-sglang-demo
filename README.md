@@ -45,6 +45,20 @@ docker run -d --rm \
 
 Blackwell GPU では recipe に従って `cu130-nightly` を使います。
 
+Qwen3 reasoning parser を付けたままでも、**リクエストごとに non-thinking を強制**できます。OpenAI クライアントでは次のように `extra_body.chat_template_kwargs.enable_thinking=False` を渡します。
+
+```python
+resp = client.chat.completions.create(
+    model='Qwen/Qwen3.5-27B',
+    messages=[{'role': 'user', 'content': 'こんにちは。1文で自己紹介して'}],
+    extra_body={
+        'chat_template_kwargs': {
+            'enable_thinking': False
+        }
+    },
+)
+```
+
 ```bash
 docker run -d --rm \
   --name qwen35-vllm-27b \
