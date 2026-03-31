@@ -207,7 +207,36 @@ Notebook:
 notebooks/vllm_pdf_input_quickstart.ipynb
 ```
 
-## 8. 停止
+## 8. GPU メモリ使用量メモ
+
+単一 128GB GPU 環境での、Qwen3.5-27B の概算メモです。
+
+### SGLang
+
+実測では `nvidia-smi` ベースで **約 95.4 GiB** 前後を使用していました。
+
+起動ログの内訳イメージ:
+- model weights: 約 53.6 GB
+- Mamba cache: 約 16.3 GB
+- KV cache (K+V): 約 18.6 GB
+- CUDA graph など: 約 1.7 GB
+- その他 runtime overhead
+
+### vLLM
+
+vLLM のログ上では概ね以下でした。
+- model loading took: **51.1 GiB**
+- Available KV cache memory: **40.21 GiB**
+- CUDA graph memory: **0.72 GiB actual / 2.83 GiB estimated**
+
+全体感としては、vLLM も **90〜100 GiB クラス** と考えてよいです。
+
+### 補足
+
+- この規模では、GPU メモリの大半は **モデル常駐分** です。
+- text / image / PDF-text / PDF-image の違いによる増分は、少なくとも粗い `nvidia-smi` 観測では大きくは見えませんでした。
+
+## 9. 停止
 
 ```bash
 docker stop qwen35-sglang-api
