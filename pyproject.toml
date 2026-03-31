@@ -1,0 +1,14 @@
+[project]
+name = "qwen35-sglang-openai-quickstart"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ipykernel>=7.2.0",
+    "jupyter>=1.1.1",
+    "nbconvert>=7.17.0",
+    "nbformat>=5.10.4",
+    "openai>=2.30.0",
+    "requests>=2.33.1",
+]
