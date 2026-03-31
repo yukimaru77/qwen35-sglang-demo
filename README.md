@@ -101,6 +101,14 @@ notebooks/openai_quickstart.ipynb
 
 ## 6. 画像入力の例
 
+まずサンプル画像を生成できます。
+
+```bash
+uv run python scripts/generate_sample_image.py
+```
+
+その後、以下のように `assets/sample_shapes.png` を使って vision input を試せます。
+
 ```python
 import base64
 import mimetypes
@@ -112,7 +120,7 @@ client = OpenAI(
     base_url='http://127.0.0.1:30000/v1',
 )
 
-img = Path('image.png')
+img = Path('assets/sample_shapes.png')
 mime = mimetypes.guess_type(img.name)[0] or 'image/png'
 image_url = 'data:' + mime + ';base64,' + base64.b64encode(img.read_bytes()).decode('utf-8')
 
@@ -122,7 +130,7 @@ resp = client.chat.completions.create(
         {
             'role': 'user',
             'content': [
-                {'type': 'text', 'text': 'この画像の内容を説明してください。'},
+                {'type': 'text', 'text': 'この画像の図形の数と色を説明してください。'},
                 {'type': 'image_url', 'image_url': {'url': image_url}},
             ],
         }
