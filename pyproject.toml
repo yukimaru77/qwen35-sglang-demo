@@ -11,5 +11,7 @@ dependencies = [
     "nbformat>=5.10.4",
     "openai>=2.30.0",
     "pillow>=12.1.1",
+    "pymupdf>=1.27.2.2",
+    "pypdf>=6.9.2",
     "requests>=2.33.1",
 ]

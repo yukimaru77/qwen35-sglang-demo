@@ -141,7 +141,30 @@ resp = client.chat.completions.create(
 print(resp)
 ```
 
-## 7. 停止
+## 7. PDF 入力のサンプル
+
+英語の深層学習論文 PDF を使って、
+- PDF から text を抽出して入力する方法
+- PDF を画像化して入力する方法
+を Notebook で試せます。
+
+サンプル論文:
+- `papers/attention_is_all_you_need.pdf`
+- `papers/deep_residual_learning.pdf`
+
+Notebook を生成:
+
+```bash
+uv run python scripts/export_pdf_notebook.py
+```
+
+Notebook:
+
+```text
+notebooks/pdf_input_quickstart.ipynb
+```
+
+## 8. 停止
 
 ```bash
 docker stop qwen35-sglang-api
