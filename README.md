@@ -221,6 +221,18 @@ Notebook:
 notebooks/vllm_pdf_input_quickstart.ipynb
 ```
 
+vLLM 版 PDF non-thinking notebook を生成:
+
+```bash
+uv run python scripts/export_vllm_pdf_no_thinking_notebook.py
+```
+
+Notebook:
+
+```text
+notebooks/vllm_pdf_no_thinking_quickstart.ipynb
+```
+
 ## 8. GPU メモリ使用量メモ
 
 単一 128GB GPU 環境での、Qwen3.5-27B の概算メモです。
