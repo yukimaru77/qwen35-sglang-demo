@@ -18,6 +18,8 @@
 
 ## 1. API サーバを起動
 
+### SGLang 版
+
 ```bash
 docker run -d --rm \
   --name qwen35-sglang-api \
@@ -39,10 +41,39 @@ docker run -d --rm \
     --reasoning-parser qwen3
 ```
 
+### vLLM 版
+
+Blackwell GPU では recipe に従って `cu130-nightly` を使います。
+
+```bash
+docker run -d --rm \
+  --name qwen35-vllm-27b \
+  --gpus all \
+  --ipc=host \
+  -p 30010:8000 \
+  -v $HOME/.cache/huggingface:/root/.cache/huggingface \
+  -e HF_TOKEN="$HF_TOKEN" \
+  vllm/vllm-openai:cu130-nightly \
+  Qwen/Qwen3.5-27B \
+  --tensor-parallel-size 1 \
+  --gpu-memory-utilization 0.8 \
+  --max-model-len 32768 \
+  --reasoning-parser qwen3 \
+  --enable-prefix-caching
+```
+
 ## 2. サーバ確認
+
+### SGLang
 
 ```bash
 curl http://127.0.0.1:30000/v1/models
+```
+
+### vLLM
+
+```bash
+curl http://127.0.0.1:30010/v1/models
 ```
 
 ## 3. Python 環境を `uv` で作成
